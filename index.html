@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte Carlo Trading Simulator & Kelly Criterion Calculator | Free Online Tool</title>
+<meta name="description" content="Free Monte Carlo trading simulator with Kelly Criterion calculator. Simulate thousands of trading scenarios, analyze risk of ruin, drawdowns, and find optimal position sizes. No signup required.">
+<meta name="keywords" content="monte carlo simulator, kelly criterion calculator, trading risk calculator, position sizing, risk of ruin, drawdown analysis, trading strategy simulator, bankroll management">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Monte Carlo Trading Simulator & Kelly Criterion Calculator">
+<meta property="og:description" content="Free tool to simulate trading strategies with Monte Carlo methods and calculate optimal position sizes using the Kelly Criterion.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="google-adsense-account" content="ca-pub-5973840408651244">
+<link rel="canonical" href="https://hasch74.github.io/">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<!-- === AD SLOT: Google AdSense === -->
+<!-- Uncomment after AdSense approval and replace ca-pub-XXXX with your publisher ID -->
+<!--
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --card: #16213e;
+    --accent: #0f3460;
+    --highlight: #e94560;
+    --text: #eee;
+    --muted: #aaa;
+    --green: #00c853;
+    --red: #ff1744;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    min-height: 100vh;
+  }
+  h1 { text-align: center; margin-bottom: 8px; font-size: 1.6em; }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 24px; font-size: 0.9em; }
+
+  .container { max-width: 1400px; margin: 0 auto; }
+
+  /* --- INFO SECTION --- */
+  .info-section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .info-section h2 {
+    color: var(--highlight);
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  .info-section p { color: var(--muted); font-size: 0.9em; margin-bottom: 8px; }
+  .info-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 12px;
+  }
+  @media (max-width: 700px) { .info-columns { grid-template-columns: 1fr; } }
+  .info-columns ul {
+    list-style: none;
+    padding: 0;
+  }
+  .info-columns li {
+    font-size: 0.85em;
+    color: var(--muted);
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+  }
+  .info-columns li strong { color: var(--text); min-width: 160px; }
+  .info-columns li .tag {
+    background: var(--accent);
+    color: var(--highlight);
+    font-size: 0.75em;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .toggle-info {
+    background: none;
+    border: 1px solid #2a4a7f;
+    color: var(--muted);
+    padding: 4px 14px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border-radius: 4px;
+    float: right;
+  }
+  .toggle-info:hover { color: var(--text); border-color: var(--highlight); background: none; }
+  .info-details { display: none; }
+  .info-details.open { display: block; }
+
+  /* --- AD BANNER --- */
+  .ad-slot {
+    background: var(--card);
+    border: 1px dashed #2a4a7f;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ad-slot .ad-placeholder {
+    color: #444;
+    font-size: 0.75em;
+    /* Remove this text once real ads are placed */
+  }
+
+  /* --- INPUT PANEL --- */
+  .input-panel {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    align-items: end;
+  }
+  .input-group { display: flex; flex-direction: column; gap: 4px; }
+  .input-group label { font-size: 0.82em; color: var(--muted); }
+  .input-group .hint { font-size: 0.72em; color: #666; margin-top: 2px; }
+  .input-group input {
+    background: var(--accent);
+    border: 1px solid #2a4a7f;
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 1em;
+    width: 100%;
+  }
+  .input-group input:focus { outline: none; border-color: var(--highlight); }
+
+  .btn-row { display: flex; gap: 12px; align-items: end; }
+  button {
+    background: var(--highlight);
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 6px;
+    font-size: 1em;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  button:hover { background: #c7384f; }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .stats-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stats-card h3 {
+    font-size: 1em;
+    color: var(--highlight);
+    margin-bottom: 12px;
+    border-bottom: 1px solid #2a4a7f;
+    padding-bottom: 8px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.92em;
+  }
+  .stat-label { color: var(--muted); }
+  .stat-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.red { color: var(--red); }
+
+  .chart-container {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-container h3 {
+    font-size: 1em;
+    color: var(--highlight);
+    margin-bottom: 12px;
+  }
+  .chart-wrapper { position: relative; width: 100%; height: 400px; }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 900px) {
+    .charts-row { grid-template-columns: 1fr; }
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    display: none;
+  }
+  .progress-bar.active { display: block; }
+  .progress-fill {
+    height: 100%;
+    background: var(--highlight);
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  .kelly-box {
+    background: var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 8px;
+  }
+  .kelly-formula {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* --- FOOTER --- */
+  footer {
+    margin-top: 40px;
+    padding: 24px;
+    text-align: center;
+    color: #555;
+    font-size: 0.8em;
+    border-top: 1px solid #2a4a7f;
+  }
+  footer a {
+    color: var(--highlight);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+  .affiliate-note {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 0.85em;
+    color: var(--muted);
+    text-align: center;
+  }
+  .affiliate-note a {
+    color: var(--highlight);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .affiliate-note a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Monte Carlo Trading Simulator & Kelly Calculator</h1>
+  <p class="subtitle">Simulate thousands of trading scenarios and find your optimal position size — 100% free, runs in your browser</p>
+
+  <!-- === INFO / DESCRIPTION SECTION === -->
+  <div class="info-section">
+    <button class="toggle-info" onclick="toggleInfo()">Show Details ▼</button>
+    <h2>What is this tool?</h2>
+    <p>
+      This free Monte Carlo simulator lets you stress-test any trading or betting strategy by running thousands of
+      randomized simulations. It also calculates the <strong>Kelly Criterion</strong> — the mathematically optimal
+      fraction of your bankroll to risk per trade to maximize long-term growth while minimizing risk of ruin.
+    </p>
+    <div class="info-details" id="infoDetails">
+      <div class="info-columns">
+        <div>
+          <h2>Input Parameters</h2>
+          <ul>
+            <li><strong>Starting Capital</strong> Your initial account balance in dollars.</li>
+            <li><strong>Win Rate (%)</strong> The percentage of trades that are winners (e.g., 60 = 60% of trades win).</li>
+            <li><strong>Number of Trades</strong> How many trades to simulate per run (e.g., 200 trades = ~1 month of active trading).</li>
+            <li><strong>Win Amount ($)</strong> Profit per $1 risked on a winning trade. For example, 1.0 means you win $1 for every $1 risked.</li>
+            <li><strong>Loss Amount ($)</strong> Loss per $1 risked on a losing trade. Typically 1.0 (you lose your stake).</li>
+            <li><strong>Bet Size (%)</strong> Fraction of your current capital risked per trade. The Kelly Criterion will tell you if this is optimal.</li>
+            <li><strong>Simulations</strong> Number of Monte Carlo runs. More = more accurate distribution. 1,000–10,000 is recommended.</li>
+          </ul>
+        </div>
+        <div>
+          <h2>What You Get</h2>
+          <ul>
+            <li><strong>Kelly Criterion</strong> Full, Half & Quarter Kelly optimal bet sizes for your edge. <span class="tag">KEY METRIC</span></li>
+            <li><strong>Equity Curves</strong> Visual plot of all simulated paths — see the spread of outcomes at a glance.</li>
+            <li><strong>Final Capital Distribution</strong> Histogram showing where your account is likely to end up.</li>
+            <li><strong>Risk Analysis</strong> Probability of profit, drawdown thresholds (25%/50%/75%), and worst-case scenarios.</li>
+            <li><strong>Drawdown Distribution</strong> Understand how deep your account might dip before recovering.</li>
+            <li><strong>Sharpe Ratio</strong> Approximate risk-adjusted return metric across all simulations.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === AD SLOT: Top Banner (728x90 Leaderboard) === -->
+  <div class="ad-slot" id="ad-top">
+    <!-- Replace with AdSense ad unit or affiliate banner -->
+    <!-- <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+    <span class="ad-placeholder"></span>
+  </div>
+
+  <!-- === INPUT PANEL === -->
+  <div class="input-panel">
+    <div class="input-group">
+      <label>Starting Capital ($)</label>
+      <input type="number" id="startCapital" value="10000" min="1" step="100">
+      <span class="hint">Your initial account balance</span>
+    </div>
+    <div class="input-group">
+      <label>Win Rate (%)</label>
+      <input type="number" id="winRate" value="55" min="1" max="99" step="0.5">
+      <span class="hint">Percentage of winning trades</span>
+    </div>
+    <div class="input-group">
+      <label>Number of Trades</label>
+      <input type="number" id="numTrades" value="200" min="1" step="10">
+      <span class="hint">Trades per simulation run</span>
+    </div>
+    <div class="input-group">
+      <label>Win Amount (per $1 risked)</label>
+      <input type="number" id="winAmount" value="1.5" min="0.01" step="0.01">
+      <span class="hint">e.g. 1.5 = you make $1.50 per $1 risked</span>
+    </div>
+    <div class="input-group">
+      <label>Loss Amount (per $1 risked)</label>
+      <input type="number" id="lossAmount" value="1" min="0.01" step="0.01">
+      <span class="hint">e.g. 1.0 = you lose your full stake</span>
+    </div>
+    <div class="input-group">
+      <label>Bet Size (% of capital)</label>
+      <input type="number" id="betPct" value="2" min="0.1" max="100" step="0.5">
+      <span class="hint">Fraction of capital risked per trade</span>
+    </div>
+    <div class="input-group">
+      <label>Monte Carlo Simulations</label>
+      <input type="number" id="numSims" value="1000" min="10" step="100">
+      <span class="hint">More runs = more accurate results</span>
+    </div>
+    <div class="btn-row">
+      <button onclick="runSimulation()">Run Simulation</button>
+    </div>
+  </div>
+
+  <div class="progress-bar" id="progressBar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <!-- === RESULTS === -->
+  <div id="results">
+    <div class="results-grid">
+      <div class="stats-card">
+        <h3>Kelly Criterion</h3>
+        <div class="stat-row">
+          <span class="stat-label">Full Kelly</span>
+          <span class="stat-value" id="kellyFull">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Half Kelly</span>
+          <span class="stat-value" id="kellyHalf">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Quarter Kelly</span>
+          <span class="stat-value" id="kellyQuarter">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Your Bet Size</span>
+          <span class="stat-value" id="kellyYours">-</span>
+        </div>
+        <div class="kelly-box">
+          <div class="stat-row">
+            <span class="stat-label">Expected Value per Trade</span>
+            <span class="stat-value" id="expectedValue">-</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Edge (EV / Stake)</span>
+            <span class="stat-value" id="edgePct">-</span>
+          </div>
+          <div class="kelly-formula">Kelly% = W - (1-W) / b</div>
+          <div class="kelly-formula">W = Win Rate, b = Win/Loss ratio</div>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <h3>Monte Carlo Results</h3>
+        <div class="stat-row">
+          <span class="stat-label">Median Final Capital</span>
+          <span class="stat-value" id="mcMedian">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Mean Final Capital</span>
+          <span class="stat-value" id="mcMean">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Best Run</span>
+          <span class="stat-value green" id="mcBest">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Worst Run</span>
+          <span class="stat-value red" id="mcWorst">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">5th Percentile</span>
+          <span class="stat-value" id="mcP5">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">25th Percentile</span>
+          <span class="stat-value" id="mcP25">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">75th Percentile</span>
+          <span class="stat-value" id="mcP75">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">95th Percentile</span>
+          <span class="stat-value" id="mcP95">-</span>
+        </div>
+      </div>
+
+      <div class="stats-card">
+        <h3>Risk Analysis</h3>
+        <div class="stat-row">
+          <span class="stat-label">Probability of Profit</span>
+          <span class="stat-value green" id="riskProfit">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Probability of Loss</span>
+          <span class="stat-value red" id="riskLoss">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">P(Drawdown ≥ 25%)</span>
+          <span class="stat-value" id="riskDD25">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">P(Drawdown ≥ 50%)</span>
+          <span class="stat-value" id="riskDD50">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">P(Drawdown ≥ 75%)</span>
+          <span class="stat-value" id="riskDD75">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Max Drawdown (Median)</span>
+          <span class="stat-value red" id="riskMaxDD">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Max Drawdown (Worst)</span>
+          <span class="stat-value red" id="riskMaxDDWorst">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Sharpe Ratio (approx)</span>
+          <span class="stat-value" id="riskSharpe">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- === AD SLOT: Mid-content (responsive) === -->
+    <div class="ad-slot" id="ad-mid">
+      <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+      <span class="ad-placeholder"></span>
+    </div>
+
+    <div class="chart-container">
+      <h3>Equity Curves (all simulation runs)</h3>
+      <div class="chart-wrapper">
+        <canvas id="equityChart"></canvas>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-container">
+        <h3>Final Capital Distribution</h3>
+        <div class="chart-wrapper">
+          <canvas id="histChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-container">
+        <h3>Max Drawdown Distribution</h3>
+        <div class="chart-wrapper">
+          <canvas id="ddChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- === AFFILIATE / RESOURCE LINKS === -->
+  <div class="affiliate-note">
+    📚 Want to learn more about position sizing and risk management?<br>
+    <!-- Replace # with your affiliate links -->
+    <a href="#" target="_blank" rel="noopener">📖 "The Kelly Capital Growth Investment Criterion" on Amazon</a> &nbsp;|&nbsp;
+    <a href="#" target="_blank" rel="noopener">📖 "Trading in the Zone" by Mark Douglas</a> &nbsp;|&nbsp;
+    <a href="#" target="_blank" rel="noopener">📖 "Fortune's Formula" by William Poundstone</a>
+  </div>
+
+  <!-- === AD SLOT: Bottom Banner === -->
+  <div class="ad-slot" id="ad-bottom">
+    <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXX" data-ad-slot="XXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+    <span class="ad-placeholder"></span>
+  </div>
+
+  <footer>
+    <p>Monte Carlo Trading Simulator — Free, open-source, no data collected. All calculations run locally in your browser.</p>
+    <p style="margin-top:8px;">
+      <strong>Disclaimer:</strong> This tool is for educational purposes only. It does not constitute financial advice.
+      Past performance and simulated results do not guarantee future returns. Always do your own research before trading.
+    </p>
+    <p style="margin-top:8px;">
+      <!-- Add your links here -->
+      <a href="#">About</a> · <a href="#">GitHub</a> · <a href="#">Contact</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+let equityChartInstance = null;
+let histChartInstance = null;
+let ddChartInstance = null;
+
+function toggleInfo() {
+  const d = document.getElementById('infoDetails');
+  const btn = document.querySelector('.toggle-info');
+  d.classList.toggle('open');
+  btn.textContent = d.classList.contains('open') ? 'Hide Details ▲' : 'Show Details ▼';
+}
+
+function fmt(n) {
+  if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e4) return (n / 1e3).toFixed(1) + 'k';
+  return n.toFixed(2);
+}
+
+function fmtPct(n) { return (n * 100).toFixed(1) + '%'; }
+
+function percentile(arr, p) {
+  const idx = (p / 100) * (arr.length - 1);
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  if (lo === hi) return arr[lo];
+  return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
+}
+
+function runSimulation() {
+  const startCapital = parseFloat(document.getElementById('startCapital').value);
+  const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+  const numTrades = parseInt(document.getElementById('numTrades').value);
+  const winAmt = parseFloat(document.getElementById('winAmount').value);
+  const lossAmt = parseFloat(document.getElementById('lossAmount').value);
+  const betPct = parseFloat(document.getElementById('betPct').value) / 100;
+  const numSims = parseInt(document.getElementById('numSims').value);
+
+  // Kelly calculation
+  const b = winAmt / lossAmt;
+  const kellyPct = Math.max(0, winRate - (1 - winRate) / b);
+  const ev = winRate * winAmt - (1 - winRate) * lossAmt;
+
+  document.getElementById('kellyFull').textContent = (kellyPct * 100).toFixed(2) + '%';
+  document.getElementById('kellyHalf').textContent = (kellyPct * 50).toFixed(2) + '%';
+  document.getElementById('kellyQuarter').textContent = (kellyPct * 25).toFixed(2) + '%';
+
+  const kellyYoursEl = document.getElementById('kellyYours');
+  kellyYoursEl.textContent = (betPct * 100).toFixed(1) + '%';
+  if (betPct > kellyPct) {
+    kellyYoursEl.className = 'stat-value red';
+    kellyYoursEl.textContent += ' (above Kelly!)';
+  } else if (betPct > kellyPct * 0.5) {
+    kellyYoursEl.className = 'stat-value';
+    kellyYoursEl.textContent += ' (Half–Full Kelly)';
+  } else {
+    kellyYoursEl.className = 'stat-value green';
+    kellyYoursEl.textContent += ' (conservative)';
+  }
+
+  document.getElementById('expectedValue').textContent = '$' + ev.toFixed(4) + ' per $1 risked';
+  const edgeEl = document.getElementById('edgePct');
+  edgeEl.textContent = (ev * 100).toFixed(2) + '%';
+  edgeEl.className = 'stat-value ' + (ev >= 0 ? 'green' : 'red');
+
+  // Monte Carlo
+  const progressBar = document.getElementById('progressBar');
+  const progressFill = document.getElementById('progressFill');
+  progressBar.classList.add('active');
+  progressFill.style.width = '0%';
+
+  setTimeout(() => {
+    const finalCapitals = [];
+    const maxDrawdowns = [];
+    const maxCurvesToShow = Math.min(numSims, 200);
+    const curveStep = Math.max(1, Math.floor(numSims / maxCurvesToShow));
+    const equityCurves = [];
+
+    for (let s = 0; s < numSims; s++) {
+      let capital = startCapital;
+      let peak = startCapital;
+      let maxDD = 0;
+      const storeCurve = (s % curveStep === 0) && equityCurves.length < maxCurvesToShow;
+      let curve = storeCurve ? [startCapital] : null;
+
+      for (let t = 0; t < numTrades; t++) {
+        const stake = capital * betPct;
+        if (Math.random() < winRate) {
+          capital += stake * winAmt;
+        } else {
+          capital -= stake * lossAmt;
+        }
+        if (capital < 0.01) capital = 0.01;
+
+        if (capital > peak) peak = capital;
+        const dd = (peak - capital) / peak;
+        if (dd > maxDD) maxDD = dd;
+
+        if (storeCurve) curve.push(capital);
+      }
+
+      finalCapitals.push(capital);
+      maxDrawdowns.push(maxDD);
+      if (storeCurve) equityCurves.push(curve);
+    }
+
+    progressFill.style.width = '100%';
+
+    const sorted = [...finalCapitals].sort((a, b) => a - b);
+    const ddSorted = [...maxDrawdowns].sort((a, b) => a - b);
+
+    const mean = finalCapitals.reduce((s, v) => s + v, 0) / numSims;
+    const median = percentile(sorted, 50);
+
+    document.getElementById('mcMedian').textContent = '$' + fmt(median);
+    document.getElementById('mcMean').textContent = '$' + fmt(mean);
+    document.getElementById('mcBest').textContent = '$' + fmt(sorted[sorted.length - 1]);
+    document.getElementById('mcWorst').textContent = '$' + fmt(sorted[0]);
+    document.getElementById('mcP5').textContent = '$' + fmt(percentile(sorted, 5));
+    document.getElementById('mcP25').textContent = '$' + fmt(percentile(sorted, 25));
+    document.getElementById('mcP75').textContent = '$' + fmt(percentile(sorted, 75));
+    document.getElementById('mcP95').textContent = '$' + fmt(percentile(sorted, 95));
+
+    const profitCount = finalCapitals.filter(c => c > startCapital).length;
+    document.getElementById('riskProfit').textContent = fmtPct(profitCount / numSims);
+    document.getElementById('riskLoss').textContent = fmtPct(1 - profitCount / numSims);
+
+    document.getElementById('riskDD25').textContent = fmtPct(maxDrawdowns.filter(d => d >= 0.25).length / numSims);
+    document.getElementById('riskDD50').textContent = fmtPct(maxDrawdowns.filter(d => d >= 0.50).length / numSims);
+    document.getElementById('riskDD75').textContent = fmtPct(maxDrawdowns.filter(d => d >= 0.75).length / numSims);
+    document.getElementById('riskMaxDD').textContent = fmtPct(percentile(ddSorted, 50));
+    document.getElementById('riskMaxDDWorst').textContent = fmtPct(ddSorted[ddSorted.length - 1]);
+
+    const returns = finalCapitals.map(c => (c - startCapital) / startCapital);
+    const meanRet = returns.reduce((s, v) => s + v, 0) / numSims;
+    const stdRet = Math.sqrt(returns.reduce((s, v) => s + (v - meanRet) ** 2, 0) / numSims);
+    document.getElementById('riskSharpe').textContent = (stdRet > 0 ? (meanRet / stdRet) : 0).toFixed(2);
+
+    drawEquityChart(equityCurves, numTrades, startCapital);
+    drawHistogram(sorted, startCapital);
+    drawDDHistogram(ddSorted);
+
+    document.getElementById('results').classList.add('visible');
+    setTimeout(() => { progressBar.classList.remove('active'); }, 500);
+  }, 50);
+}
+
+function drawEquityChart(curves, numTrades, startCapital) {
+  const ctx = document.getElementById('equityChart').getContext('2d');
+  if (equityChartInstance) equityChartInstance.destroy();
+
+  const labels = Array.from({ length: numTrades + 1 }, (_, i) => i);
+
+  const datasets = curves.map((curve) => {
+    const gain = curve[curve.length - 1] >= startCapital;
+    return {
+      data: curve,
+      borderColor: gain ? 'rgba(0,200,83,0.12)' : 'rgba(255,23,68,0.12)',
+      borderWidth: 1,
+      pointRadius: 0,
+      fill: false,
+      tension: 0.1,
+    };
+  });
+
+  const medianCurve = [];
+  const tradeCount = curves[0] ? curves[0].length : 0;
+  for (let t = 0; t < tradeCount; t++) {
+    const vals = curves.map(c => c[t]).sort((a, b) => a - b);
+    medianCurve.push(percentile(vals, 50));
+  }
+  datasets.push({
+    data: medianCurve,
+    borderColor: '#e94560',
+    borderWidth: 2.5,
+    pointRadius: 0,
+    fill: false,
+    tension: 0.1,
+    label: 'Median',
+  });
+  datasets.push({
+    data: Array(tradeCount).fill(startCapital),
+    borderColor: 'rgba(255,255,255,0.3)',
+    borderWidth: 1,
+    borderDash: [6, 4],
+    pointRadius: 0,
+    fill: false,
+    label: 'Starting Capital',
+  });
+
+  equityChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { filter: item => item.text != null, color: '#eee' }
+        },
+        tooltip: { enabled: false },
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Trade #', color: '#aaa' },
+          ticks: { color: '#aaa', maxTicksLimit: 20 },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+        y: {
+          title: { display: true, text: 'Capital ($)', color: '#aaa' },
+          ticks: { color: '#aaa', callback: v => '$' + fmt(v) },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        }
+      },
+      interaction: { mode: 'none' },
+    }
+  });
+}
+
+function drawHistogram(sorted, startCapital) {
+  const ctx = document.getElementById('histChart').getContext('2d');
+  if (histChartInstance) histChartInstance.destroy();
+
+  const numBins = Math.min(50, Math.max(15, Math.ceil(Math.sqrt(sorted.length))));
+  const min = sorted[0];
+  const max = sorted[sorted.length - 1];
+  const range = max - min || 1;
+  const binWidth = range / numBins;
+
+  const bins = Array(numBins).fill(0);
+  const binLabels = [];
+  for (let i = 0; i < numBins; i++) {
+    binLabels.push('$' + fmt(min + i * binWidth));
+  }
+  for (const val of sorted) {
+    let idx = Math.floor((val - min) / binWidth);
+    if (idx >= numBins) idx = numBins - 1;
+    bins[idx]++;
+  }
+
+  const colors = binLabels.map((_, i) => {
+    const midVal = min + (i + 0.5) * binWidth;
+    return midVal >= startCapital ? 'rgba(0,200,83,0.7)' : 'rgba(255,23,68,0.7)';
+  });
+
+  histChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: binLabels,
+      datasets: [{ data: bins, backgroundColor: colors, borderColor: colors.map(c => c.replace('0.7', '1')), borderWidth: 1 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          title: { display: true, text: 'Final Capital', color: '#aaa' },
+          ticks: { color: '#aaa', maxRotation: 45, maxTicksLimit: 12 },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+        y: {
+          title: { display: true, text: 'Number of Runs', color: '#aaa' },
+          ticks: { color: '#aaa' },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        }
+      }
+    }
+  });
+}
+
+function drawDDHistogram(ddSorted) {
+  const ctx = document.getElementById('ddChart').getContext('2d');
+  if (ddChartInstance) ddChartInstance.destroy();
+
+  const numBins = 25;
+  const bins = Array(numBins).fill(0);
+  const binLabels = [];
+  const binWidth = 1 / numBins;
+
+  for (let i = 0; i < numBins; i++) {
+    binLabels.push((i * binWidth * 100).toFixed(0) + '%');
+  }
+  for (const dd of ddSorted) {
+    let idx = Math.floor(dd / binWidth);
+    if (idx >= numBins) idx = numBins - 1;
+    bins[idx]++;
+  }
+
+  const colors = bins.map((_, i) => {
+    const midDD = (i + 0.5) * binWidth;
+    if (midDD < 0.15) return 'rgba(0,200,83,0.7)';
+    if (midDD < 0.35) return 'rgba(255,193,7,0.7)';
+    return 'rgba(255,23,68,0.7)';
+  });
+
+  ddChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: binLabels,
+      datasets: [{ data: bins, backgroundColor: colors, borderColor: colors.map(c => c.replace('0.7', '1')), borderWidth: 1 }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          title: { display: true, text: 'Max Drawdown', color: '#aaa' },
+          ticks: { color: '#aaa', maxTicksLimit: 12 },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        },
+        y: {
+          title: { display: true, text: 'Number of Runs', color: '#aaa' },
+          ticks: { color: '#aaa' },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+        }
+      }
+    }
+  });
+}
+
+window.addEventListener('load', runSimulation);
+</script>
+
+</body>
+</html>
