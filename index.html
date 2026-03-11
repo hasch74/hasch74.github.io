@@ -285,18 +285,45 @@
   <p class="subtitle">Simulate thousands of trading scenarios and find your optimal position size — 100% free, runs in your browser</p>
 
   <!-- === INFO / DESCRIPTION SECTION === -->
-  <div class="info-section">
-    <button class="toggle-info" onclick="toggleInfo()">Show Details ▼</button>
-    <h2>What is this tool?</h2>
+  <div class="info-section content-rich">
+    <h2>Why Use a Monte Carlo Simulator for Trading?</h2>
     <p>
-      This free Monte Carlo simulator lets you stress-test any trading or betting strategy by running thousands of
-      randomized simulations. It also calculates the <strong>Kelly Criterion</strong> — the mathematically optimal
-      fraction of your bankroll to risk per trade to maximize long-term growth while minimizing risk of ruin.
+      In trading, edge is not enough—you need <strong>proper position sizing</strong> to survive the inevitable drawdowns. 
+      This free Monte Carlo simulator lets you stress-test any trading or betting strategy by running thousands of 
+      randomized simulations based on your actual historical win rate and risk/reward ratio.
     </p>
-    <div class="info-details" id="infoDetails">
+
+    <div class="article-content" style="margin-top: 20px;">
+      <h3 style="color: var(--highlight); font-size: 1.05em; margin-bottom: 8px;">What is the Kelly Criterion?</h3>
+      <p>
+        The <strong>Kelly Criterion</strong> is a mathematical formula that calculates the optimal fraction of your bankroll 
+        to risk on a single trade or bet, given your strategy's edge. Betting exactly "Full Kelly" maximizes your 
+        long-term geometric compound growth rate. However, betting Full Kelly is highly volatile and carries a 
+        near-100% chance of experiencing a 50% drawdown.
+      </p>
+      <p style="margin-top: 8px;">
+        Because of this volatility, professional traders often bet <strong>Half Kelly</strong> or <strong>Quarter Kelly</strong>. 
+        This provides a much smoother equity curve, significantly lower drawdowns, and still captures a large percentage 
+        of the optimal growth. <em>Never bet more than Full Kelly</em>, as this mathematically guarantees long-term ruin.
+      </p>
+
+      <h3 style="color: var(--highlight); font-size: 1.05em; margin-top: 24px; margin-bottom: 8px;">How to Interpret Your Results</h3>
+      <p>
+        Once you run the simulation, look closely at the <strong>Max Drawdown</strong> distribution and the <strong>Risk Analysis</strong> card. 
+        If your strategy has a 30% chance of seeing a 75% drawdown, your position size is likely too large for your 
+        psychology to handle—even if it is mathematically profitable. Adjust your "Bet Size (%)" downward and run 
+        the simulation again until the drawdowns align with your personal risk tolerance.
+      </p>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #2a4a7f; margin: 24px 0;">
+
+    <button class="toggle-info" onclick="toggleInfo()">Show Input Parameter Details ▼</button>
+    <h2 style="margin-bottom:0;">Tool Documentation</h2>
+    <div class="info-details" id="infoDetails" style="margin-top:16px;">
       <div class="info-columns">
         <div>
-          <h2>Input Parameters</h2>
+          <h3 style="color:var(--text);font-size:1em;">Input Parameters</h3>
           <ul>
             <li><strong>Starting Capital</strong> Your initial account balance in dollars.</li>
             <li><strong>Win Rate (%)</strong> The percentage of trades that are winners (e.g., 60 = 60% of trades win).</li>
@@ -308,12 +335,12 @@
           </ul>
         </div>
         <div>
-          <h2>What You Get</h2>
+          <h3 style="color:var(--text);font-size:1em;">What You Get</h3>
           <ul>
             <li><strong>Kelly Criterion</strong> Full, Half & Quarter Kelly optimal bet sizes for your edge. <span class="tag">KEY METRIC</span></li>
             <li><strong>Equity Curves</strong> Visual plot of all simulated paths — see the spread of outcomes at a glance.</li>
             <li><strong>Final Capital Distribution</strong> Histogram showing where your account is likely to end up.</li>
-            <li><strong>Risk Analysis</strong> Probability of profit, drawdown thresholds (25%/50%/75%), and worst-case scenarios.</li>
+            <li><strong>Risk Analysis</strong> Probability of profit, drawdown thresholds, and worst-case scenarios.</li>
             <li><strong>Drawdown Distribution</strong> Understand how deep your account might dip before recovering.</li>
             <li><strong>Sharpe Ratio</strong> Approximate risk-adjusted return metric across all simulations.</li>
           </ul>
