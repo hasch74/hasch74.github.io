@@ -290,36 +290,51 @@
     <p>
       In trading, edge is not enough—you need <strong>proper position sizing</strong> to survive the inevitable drawdowns. 
       This free Monte Carlo simulator lets you stress-test any trading or betting strategy by running thousands of 
-      randomized simulations based on your actual historical win rate and risk/reward ratio.
+      randomized simulations based on your actual historical win rate and risk/reward ratio. Without simulating 
+      sequence risk, many profitable strategies will fail in practical application due to psychological ruin or 
+      account liquidation.
     </p>
 
     <div class="article-content" style="margin-top: 20px;">
       <h3 style="color: var(--highlight); font-size: 1.05em; margin-bottom: 8px;">What is the Kelly Criterion?</h3>
       <p>
         The <strong>Kelly Criterion</strong> is a mathematical formula that calculates the optimal fraction of your bankroll 
-        to risk on a single trade or bet, given your strategy's edge. Betting exactly "Full Kelly" maximizes your 
+        to risk on a single trade or bet, given your strategy's expected value and edge. Betting exactly "Full Kelly" maximizes your 
         long-term geometric compound growth rate. However, betting Full Kelly is highly volatile and carries a 
-        near-100% chance of experiencing a 50% drawdown.
+        near-100% chance of experiencing a 50% drawdown over time, which most retail traders are unprepared for.
       </p>
       <p style="margin-top: 8px;">
-        Because of this volatility, professional traders often bet <strong>Half Kelly</strong> or <strong>Quarter Kelly</strong>. 
-        This provides a much smoother equity curve, significantly lower drawdowns, and still captures a large percentage 
-        of the optimal growth. <em>Never bet more than Full Kelly</em>, as this mathematically guarantees long-term ruin.
+        Because of this volatility, professional traders, quantitative funds, and syndicates often bet <strong>Half Kelly</strong> or <strong>Quarter Kelly</strong>. 
+        This approach provides a much smoother equity curve, significantly lower drawdowns, and still captures a large percentage 
+        of the optimal compound growth. The most critical rule in position sizing is: <em>Never bet more than Full Kelly</em>, as this mathematically guarantees long-term ruin, taking you into negative expected growth territory.
       </p>
 
-      <h3 style="color: var(--highlight); font-size: 1.05em; margin-top: 24px; margin-bottom: 8px;">How to Interpret Your Results</h3>
+      <h3 style="color: var(--highlight); font-size: 1.05em; margin-top: 24px; margin-bottom: 8px;">Understanding Sequence Risk and Drawdowns</h3>
       <p>
-        Once you run the simulation, look closely at the <strong>Max Drawdown</strong> distribution and the <strong>Risk Analysis</strong> card. 
+        Even with a 70% win rate, you will inevitably encounter losing streaks. Sequence risk refers to the danger that a cluster 
+        of losses occurs early in your trading career, reducing your capital so severely that recovering becomes mathematically improbable. 
+        A Monte Carlo simulator models this by shuffling the order of your wins and losses thousands of times.
+      </p>
+      <p style="margin-top: 8px;">
+        Once you run the simulation below, look closely at the <strong>Max Drawdown</strong> distribution and the <strong>Risk Analysis</strong> card. 
         If your strategy has a 30% chance of seeing a 75% drawdown, your position size is likely too large for your 
-        psychology to handle—even if it is mathematically profitable. Adjust your "Bet Size (%)" downward and run 
+        psychology to handle—even if the strategy is mathematically profitable on a spreadsheet. Adjust your "Bet Size (%)" downward and run 
         the simulation again until the drawdowns align with your personal risk tolerance.
+      </p>
+
+      <h3 style="color: var(--highlight); font-size: 1.05em; margin-top: 24px; margin-bottom: 8px;">Case Study: The 1.5 R:R Strategy</h3>
+      <p>
+        Consider a swing trader with a win rate of 55% and a risk-to-reward ratio of 1:1.5 (winning $1.50 for every $1.00 risked). 
+        The calculator below will show that the Full Kelly fraction for this edge is approximately 25%. However, running the Monte Carlo 
+        simulation with a 25% bet size will reveal terrifying drawdowns (often exceeding 80%). By reducing the bet size to 5% (a Fractional Kelly approach), 
+        the trader maintains excellent long-term capital growth while keeping the median max drawdown under a manageable 20%.
       </p>
     </div>
 
     <hr style="border: none; border-top: 1px solid #2a4a7f; margin: 24px 0;">
 
     <button class="toggle-info" onclick="toggleInfo()">Show Input Parameter Details ▼</button>
-    <h2 style="margin-bottom:0;">Tool Documentation</h2>
+    <h2 style="margin-bottom:0;">Tool Documentation & Setup</h2>
     <div class="info-details" id="infoDetails" style="margin-top:16px;">
       <div class="info-columns">
         <div>
