@@ -276,11 +276,43 @@
     font-weight: 600;
   }
   .affiliate-note a:hover { text-decoration: underline; }
+
+  /* --- NAV --- */
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    background: var(--card);
+    border-radius: 8px;
+    border: 1px solid #2a4a7f;
+  }
+  nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95em;
+  }
+  nav a:hover {
+    color: var(--highlight);
+  }
+  nav a.active {
+    color: var(--highlight);
+    border-bottom: 2px solid var(--highlight);
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <nav>
+    <a href="index.html" class="active">Home</a>
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+
   <h1>Monte Carlo Trading Simulator & Kelly Calculator</h1>
   <p class="subtitle">Simulate thousands of trading scenarios and find your optimal position size — 100% free, runs in your browser</p>
 
